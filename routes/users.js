@@ -4,13 +4,16 @@ const path = require('path');
 
 const dataPath = path.join(__dirname, '..','data','users.json')
 
+//JSON list of all users
 userRouter.get('/', (req, res) => {
    fs.readFile(dataPath, { encoding: 'utf8' })
    .then(data => JSON.parse(data))
    .then(users => res.status(200).send(users))
-   .catch(err => res.status(400).send(err))
+   .catch(err => res.status(404).send(err))
 });
 
+//JSON of a user with an ID passed after /users.
+//If it doesn't exist, the API should return 404 response status and the following JSON: { "message": "User ID not found" }
 userRouter.get('/:id', (req, res) => {
   fs.readFile(dataPath, { encoding: 'utf8' })
   .then(data => JSON.parse(data))
@@ -20,37 +23,9 @@ userRouter.get('/:id', (req, res) => {
     if (user) {
       return res.status(200).send(user)
     }
-    return res.status(404).send({ "message": "User ID not found" })
+    return res.status(404).send({"message": "User ID not found"})
   })
-  .catch(err => res.status(400).send(err))
+  .catch(err => res.status(404).send(err))
 });
 
 module.exports = userRouter;
-
-// const express = require('express');
-// const usersRouter = express.Router();
-// const fs = require('fs');
-
-// usersRouter.get('/', (req, res) => {
-//   fs.readFile('./data/users.json', {encoding: 'utf8'})
-//     .then((data) => {
-//       res.status(200).send(JSON.parse(data));
-//     });
-// });
-
-// usersRouter.get('/:_id', (req, res) => {
-//   fs.readFile('./data/users.json', {encoding: 'utf8'})
-//     .then((data) => {
-//       const parsedData = JSON.parse(data);
-//       const user = parsedData.find(user => user._id === req.params._id);
-
-//       if (user) {
-//         return res.status(200).send(user);
-//       }
-//       return res.status(404).send({ 'message': 'User ID no found' });
-//     })
-// });
-
-
-// module.exports = usersRouter;
-
