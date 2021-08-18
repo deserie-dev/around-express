@@ -1,15 +1,15 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
 const fs = require('fs');
 
-router.get('/', (req, res) => {
+router.get('/users', (req, res) => {
   fs.readFile('./data/users.json', {encoding: 'utf8'})
     .then((data) => {
       res.status(200).send(JSON.parse(data));
     });
 });
 
-router.get('/:_id', (req, res) {
+router.get('/users/:_id', (req, res) => {
   fs.readFile('./data/users.json', {encoding: 'utf8'})
     .then((data) => {
       const parsedData = JSON.parse(data);
