@@ -9,7 +9,7 @@ userRouter.get('/', (req, res) => {
   fs.readFile(dataPath, { encoding: 'utf8' })
     .then((data) => JSON.parse(data))
     .then((users) => res.status(200).send(users))
-    .catch((err) => res.status(404).send(err));
+    .catch((err) => res.status(500).send(err));
 });
 
 // JSON of a user with an ID passed after /users.
@@ -24,7 +24,7 @@ userRouter.get('/:id', (req, res) => {
       }
       return res.status(404).send({ message: 'User ID not found' });
     })
-    .catch((err) => res.status(404).send(err));
+    .catch((err) => res.status(500).send(err));
 });
 
 module.exports = userRouter;
