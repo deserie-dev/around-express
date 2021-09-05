@@ -1,13 +1,8 @@
-// JSON list of all cards
 const cardsRouter = require('express').Router();
-const fs = require('fs').promises;
-const path = require('path');
+const { getCards, createCard, deleteCardById } = require('../controllers/cards');
 
-const dataPath = path.join(__dirname, '..', 'data', 'cards.json');
-
-cardsRouter.get('/', (req, res) => fs.readFile(dataPath, { encoding: 'utf8' })
-  .then((data) => JSON.parse(data))
-  .then((cards) => res.status(200).send(cards))
-  .catch((err) => res.status(500).send(err)));
+cardsRouter.get('/', getCards); // returns all cards
+cardsRouter.post('/', createCard); // creates a new card
+cardsRouter.delete('/:id', deleteCardById); // deletes a card by id
 
 module.exports = cardsRouter;
