@@ -10,18 +10,19 @@ const app = express();
 mongoose.connect('mongodb://localhost:27017/aroundb');
 
 app.use(express.json());
+app.use(express.urlencoded());
 app.use(helmet());
 
-app.use('/users', usersRouter);
-app.use('/cards', cardsRouter);
+app.use(usersRouter);
+app.use(cardsRouter);
 
-// app.use((req, res, next) => {
-//   req.user = {
-//     _id: '5d8b8592978f8bd833ca8133',  paste the _id of the test user created in the previous step
-//   };
+app.use((req, res, next) => {
+  req.user = {
+    _id: '6136591f357463cbb1723708',
+  };
 
-//   next();
-// });
+  next();
+});
 
 app.get('*', (req, res) => {
   res.status(404).send({ message: 'Requested resource not found' });

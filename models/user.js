@@ -16,7 +16,13 @@ const userSchema = new mongoose.Schema({
   avatar: {
     type: String,
     required: true,
-    validate: /^(http:\/\/|https:\/\/)(www.)?[a-zA-Z0-9-._~:/?%#[\]@!$&'()*+,;=]+#?$/igm,
+    validate: {
+      validator(v) {
+        return /(https|http):\/\/(w{3}?\.)?[-a-z0-9+&@#/%?=~_|!:,.;]*/.test(v);
+      },
+      message: 'Please enter a valid url',
+    },
   },
 });
+
 module.exports = mongoose.model('user', userSchema);

@@ -1,25 +1,25 @@
 const Card = require('../models/card');
 
-module.exports.getCards = (req, res) => {
+const getCards = (req, res) => {
   Card.find({})
-    .then((card) => res.send({ data: card }))
-    .catch((err) => res.status(500).send({ message: 'Error', error: err }));
+    .then((cards) => res.send({ data: cards }))
+    .catch(() => res.status(500).send({ message: 'Unable to find cards' }));
 };
 
-module.exports.createCard = (req, res) => {
-  console.log(req.user._id);
+const createCard = (req, res) => {
   const { name, link } = req.body;
-  Card.create({ name, link, owner: req.user._id })
-
+  Card.create({ name, link })
     .then((card) => res.send({ data: card }))
-    .catch((err) => res.status(500).send({ message: 'Error', error: err }));
+    .catch(() => res.status(500).send({ message: 'Unable to create card' }));
 };
 
-module.exports.deleteCardById = (req, res) => {
-  Card.findByIdAndRemove(req.params.id)
-    .then((user) => res.send({ data: user }))
-    .catch((err) => res.status(500).send({ message: 'Error', error: err }));
+const deleteCardById = (req, res) => {
+  Card.findByIdAndRemove(req.user._id)
+    .then((card) => res.send({ data: card }))
+    .catch(() => res.status(500).send({ message: 'Unable to delete card' }));
 };
+
+module.exports = { getCards, createCard, deleteCardById };
 
 // A controller is a function responsible for interacting with the model.
 
