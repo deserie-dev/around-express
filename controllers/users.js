@@ -3,13 +3,25 @@ const User = require('../models/user');
 const getUsers = (req, res) => {
   User.find({})
     .then((users) => res.status(200).send({ data: users }))
-    .catch(() => res.status(500).send({ message: 'Unable to find users' }));
+    .catch((err) => res.status(400).send({ message: err.message }));
 };
 
 const getUserById = (req, res) => {
   User.findById(req.params.id)
-    .then((user) => res.send({ data: user }))
-    .catch(() => res.status(500).send({ message: 'Unable to find user' }));
+    .then((user) => {
+      if (user) {
+        res.status(200).send({ data: user });
+      } else {
+        res.status(404).send({ message: 'User not found.' });
+      }
+    })
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        res.status(400).send({ message: 'Unable to find user' });
+      } else {
+        res.status(500).send({ message: err.message });
+      }
+    });
 };
 
 const createUser = (req, res) => {
@@ -18,41 +30,52 @@ const createUser = (req, res) => {
     .then((user) => res.status(200).send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Please input a valid URL' });
+        res.status(400).send({ message: 'Unable to find user' });
       }
-      res.status(500).send({ message:  });
+      res.status(500).send({ message: err.message });
     });
 };
 
 const updateProfile = (req, res) => {
-  const {
-    name, about,
-  } = req.body;
-  User.findByIdAndUpdate(req.user._id, { name, about },
+  const { name, about } = req.body;
+  User.findByIdAndUpdate(
+    req.user._id,
+    { name, about },
     {
       new: true,
       runValidators: true,
-    }
-    .then(res.send({ data: user }))
-    .catch(() => res.status(500).send({ message: 'Unable to update profile' }));
+    },
+  )
+    .then((user) => {
+      if (!user) {
+        res.status(404).send({ message: 'Unable to find user' });
+      }
+      res.status(200).send({ data: user });
+    })
+    .catch((err) => res.status(500).send({ message: err.message }));
 };
 
 const updateAvatar = (req, res) => {
-  const {
-    avatar,
-  } = req.body;
-  User.findByIdAndUpdate(req.user._id, { avatar },
+  const { avatar } = req.body;
+  User.findByIdAndUpdate(
+    req.user._id,
+    { avatar },
     {
       new: true,
       runValidators: true,
-    })
-    .then(res.send({ data: user }))
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        return res.status(400).send({ message: 'Please enter a valid URL' });
+    },
+  )
+    .then((user) => {
+      if (!user) {
+        res.status(404).send({ message: 'Unable to find user' });
       }
-      return res.status(500).send({ message:  });
+      res.status(200).send({ data: user });
+    })
+    .catch((err) => {
+      res.status(500).send({ message: err.message });
     });
 };
 
-module.exports = { getUsers, getUserById, createUser, updateProfile, updateAvatar };
+module.exports = {
+  getUsers, getUserById, createUser, updateProfile, updateAvatar,
+};
