@@ -20,6 +20,12 @@ const cardSchema = new mongoose.Schema({
   link: {
     type: String,
     required: true,
+    validate: {
+      validator(v) {
+        return /^(http:\/\/|https:\/\/)(www.)?[a-zA-Z0-9-._~:/?%#[\]@!$&'()*+,;=]+#?$/igm.test(v);
+      },
+      message: 'Please enter a valid link',
+    },
   },
   createdAt: {
     type: Date,

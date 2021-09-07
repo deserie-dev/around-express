@@ -18,11 +18,13 @@ const userSchema = new mongoose.Schema({
     required: true,
     validate: {
       validator(v) {
-        return /(https|http):\/\/(w{3}?\.)?[-a-z0-9+&@#/%?=~_|!:,.;]*/.test(v);
+        return /^(http:\/\/|https:\/\/)(www.)?[a-zA-Z0-9-._~:/?%#[\]@!$&'()*+,;=]+#?$/igm.test(v);
       },
-      message: 'Please enter a valid url',
+      message: 'Please enter a valid link',
     },
   },
 });
 
 module.exports = mongoose.model('user', userSchema);
+
+// https://mongoosejs.com/docs/validation.html#custom-validators
