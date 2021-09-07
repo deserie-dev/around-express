@@ -8,6 +8,7 @@ const getCards = (req, res) => {
 
 const createCard = (req, res) => {
   const { name, link } = req.body;
+  console.log(req.user._id); // _id will become accessible
   Card.create({ name, link })
     .then((card) => res.send({ data: card }))
     .catch(() => res.status(500).send({ message: 'Unable to create card' }));
