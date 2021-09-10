@@ -16,11 +16,10 @@ const getUserById = (req, res) => {
       }
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Unable to find user' });
-      } else {
-        res.status(500).send({ message: err.message });
+      if (err.name === 'CastError') {
+        return res.status(400).send({ message: 'Invalid data' });
       }
+      return res.status(500).send({ message: 'Internal server error' });
     });
 };
 
@@ -32,7 +31,7 @@ const createUser = (req, res) => {
       if (err.name === 'ValidationError') {
         res.status(400).send({ message: 'Unable to find user' });
       }
-      res.status(500).send({ message: err.message });
+      res.status(500).send({ message: 'Internal server error' });
     });
 };
 
@@ -47,12 +46,17 @@ const updateProfile = (req, res) => {
     },
   )
     .then((user) => {
-      if (!user) {
-        res.status(404).send({ message: 'Unable to find user' });
-      }
       res.status(200).send({ data: user });
     })
-    .catch((err) => res.status(500).send({ message: err.message }));
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        res.status(400).send({ message: 'Unable to validate data' });
+      } else if (err.name === 'CastError') {
+        res.status(404).send({ message: 'Unable to find user' });
+      } else {
+        res.status(500).send({ message: 'Internal server error' });
+      }
+    });
 };
 
 const updateAvatar = (req, res) => {
@@ -66,13 +70,16 @@ const updateAvatar = (req, res) => {
     },
   )
     .then((user) => {
-      if (!user) {
-        res.status(404).send({ message: 'Unable to find user' });
-      }
       res.status(200).send({ data: user });
     })
     .catch((err) => {
-      res.status(500).send({ message: err.message });
+      if (err.name === 'ValidationError') {
+        res.status(400).send({ message: 'Unable to validate data' });
+      } else if (err.name === 'CastError') {
+        res.status(404).send({ message: 'Unable to find user' });
+      } else {
+        res.status(500).send({ message: 'Internal server error' });
+      }
     });
 };
 
