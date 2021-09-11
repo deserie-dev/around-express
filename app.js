@@ -13,9 +13,6 @@ app.use(express.json());
 app.use(express.urlencoded());
 app.use(helmet());
 
-app.use(usersRouter);
-app.use(cardsRouter);
-
 app.use((req, res, next) => {
   req.user = {
     _id: '6136591f357463cbb1723708',
@@ -23,6 +20,9 @@ app.use((req, res, next) => {
 
   next();
 });
+
+app.use(usersRouter);
+app.use(cardsRouter);
 
 app.get('*', (req, res) => {
   res.status(404).send({ message: 'Requested resource not found' });
